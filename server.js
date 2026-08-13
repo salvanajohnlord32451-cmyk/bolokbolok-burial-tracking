@@ -35,16 +35,18 @@ const PORT = process.env.PORT || 5000;
 // Smart Database Connection Logic with Automatic In-Memory Fallback
 const connectDatabase = async () => {
   const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/burial_inventory_db';
+  const isCloud = mongoUri.includes('mongodb+srv://');
 
   try {
-    console.log(`Connecting to MongoDB at: ${mongoUri}...`);
-    // Set connection timeout to 4 seconds to quickly detect if local MongoDB server is absent
+    const maskedUri = mongoUri.replace(/\/\/[^:]+:[^@]+@/, '//***:***@');
+    console.log(`Connecting to MongoDB at: ${maskedUri}...`);
+
     await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 4000
+      serverSelectionTimeoutMS: isCloud ? 10000 : 4000
     });
-    console.log('✅ Connected to MongoDB Database successfully.');
+    console.log(`✅ Connected to MongoDB ${isCloud ? 'Atlas Cloud Database' : 'Database'} successfully.`);
   } catch (err) {
-    console.warn('⚠️ Standard MongoDB connection failed or service not running locally.');
+    console.warn(`⚠️ MongoDB connection failed: ${err.message}`);
     console.log('🔄 Initializing in-memory MongoDB server fallback...');
 
     try {

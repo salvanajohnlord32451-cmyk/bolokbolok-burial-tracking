@@ -32,8 +32,11 @@ app.get('*', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-// Smart Database Connection Logic with Automatic In-Memory Fallback
+// Cached DB connection (important for Vercel serverless — reuse across invocations)
+let dbConnected = false;
+
 const connectDatabase = async () => {
+  if (dbConnected) return; // Reuse existing connection on Vercel warm invocations
   const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/burial_inventory_db';
   const isCloud = mongoUri.includes('mongodb+srv://');
 
@@ -44,6 +47,7 @@ const connectDatabase = async () => {
     await mongoose.connect(mongoUri, {
       serverSelectionTimeoutMS: isCloud ? 10000 : 4000
     });
+    dbConnected = true;
     console.log(`✅ Connected to MongoDB ${isCloud ? 'Atlas Cloud Database' : 'Database'} successfully.`);
   } catch (err) {
     console.warn(`⚠️ MongoDB connection failed: ${err.message}`);
@@ -55,6 +59,7 @@ const connectDatabase = async () => {
       const memoryUri = mongoServer.getUri();
 
       await mongoose.connect(memoryUri);
+      dbConnected = true;
       console.log(`✅ Connected to MongoMemoryServer fallback at: ${memoryUri}`);
     } catch (memErr) {
       console.error('❌ Failed to connect to MongoDB Memory Server:', memErr);
@@ -62,8 +67,20 @@ const connectDatabase = async () => {
   }
 };
 
-connectDatabase().then(() => {
-  app.listen(PORT, () => {
-    console.log(`🚀 Burial Inventory & Tracking Server running at http://localhost:${PORT}`);
+// For Vercel serverless: connect DB before each request, then hand off to Express
+const handler = async (req, res) => {
+  await connectDatabase();
+  return app(req, res);
+};
+
+// Export for Vercel serverless runtime
+module.exports = handler;
+
+// Run locally only (not on Vercel)
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  connectDatabase().then(() => {
+    app.listen(PORT, () => {
+      console.log(`🚀 Burial Inventory & Tracking Server running at http://localhost:${PORT}`);
+    });
   });
-});
+}

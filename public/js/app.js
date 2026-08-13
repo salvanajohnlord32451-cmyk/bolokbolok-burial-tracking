@@ -27,6 +27,19 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initApp() {
+  // Check if URL contains a password reset token
+  const hash = window.location.hash;
+  const resetMatch = hash.match(/^#resetToken=([a-f0-9]+)$/);
+  if (resetMatch) {
+    const token = resetMatch[1];
+    document.getElementById('reset-token-input').value = token;
+    showAuthScreen();
+    showResetForm();
+    // Clear token from URL without reloading
+    history.replaceState(null, '', window.location.pathname);
+    return;
+  }
+
   if (state.token && state.user) {
     showMainApp();
     loadDashboardStats();
@@ -46,6 +59,18 @@ function is20YearsDeceased(dateOfDeathStr) {
 }
 
 // ================= AUTHENTICATION LOGIC =================
+
+function showAllAuthForms(activeId) {
+  ['login-form', 'register-form', 'forgot-form', 'reset-form'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('hidden', id !== activeId);
+  });
+  showAuthAlert('');
+}
+
+function showResetForm() {
+  showAllAuthForms('reset-form');
+}
 
 function showAuthScreen() {
   document.getElementById('auth-container').classList.remove('hidden');
@@ -147,6 +172,80 @@ function handleLogout() {
   localStorage.removeItem('er_user_data');
   showToast('You have logged out.', 'info');
   showAuthScreen();
+}
+
+// ================= FORGOT / RESET PASSWORD LOGIC =================
+
+async function handleForgotPassword(e) {
+  e.preventDefault();
+  const email = document.getElementById('forgot-email').value.trim();
+  const btn = e.target.querySelector('button[type="submit"]');
+
+  showAuthAlert('');
+  btn.disabled = true;
+  btn.querySelector('span').textContent = 'Sending...';
+
+  try {
+    const res = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showAuthAlert(data.message, 'success');
+      document.getElementById('forgot-form').reset();
+    } else {
+      showAuthAlert(data.message || 'Failed to send reset email.', 'error');
+    }
+  } catch (err) {
+    showAuthAlert('Server error. Please try again.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.querySelector('span').textContent = 'Send Reset Link';
+  }
+}
+
+async function handleResetPassword(e) {
+  e.preventDefault();
+  const token = document.getElementById('reset-token-input').value;
+  const newPassword = document.getElementById('reset-new-password').value;
+  const confirmPassword = document.getElementById('reset-confirm-password').value;
+  const btn = e.target.querySelector('button[type="submit"]');
+
+  showAuthAlert('');
+
+  if (newPassword !== confirmPassword) {
+    showAuthAlert('Passwords do not match. Please try again.', 'error');
+    return;
+  }
+  if (newPassword.length < 6) {
+    showAuthAlert('Password must be at least 6 characters.', 'error');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.querySelector('span').textContent = 'Resetting...';
+
+  try {
+    const res = await fetch('/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, newPassword })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showAuthAlert(data.message, 'success');
+      setTimeout(() => showAllAuthForms('login-form'), 2000);
+    } else {
+      showAuthAlert(data.message || 'Reset failed. Link may have expired.', 'error');
+    }
+  } catch (err) {
+    showAuthAlert('Server error. Please try again.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.querySelector('span').textContent = 'Reset Password';
+  }
 }
 
 function showAuthAlert(msg, type = 'error') {
@@ -637,17 +736,28 @@ function setupEventListeners() {
   // Auth Form Toggles & Submits
   document.getElementById('login-form').addEventListener('submit', handleLogin);
   document.getElementById('register-form').addEventListener('submit', handleRegister);
+  document.getElementById('forgot-form').addEventListener('submit', handleForgotPassword);
+  document.getElementById('reset-form').addEventListener('submit', handleResetPassword);
+
   document.getElementById('show-register-btn').addEventListener('click', (e) => {
     e.preventDefault();
-    document.getElementById('login-form').classList.add('hidden');
-    document.getElementById('register-form').classList.remove('hidden');
-    showAuthAlert('');
+    showAllAuthForms('register-form');
   });
   document.getElementById('show-login-btn').addEventListener('click', (e) => {
     e.preventDefault();
-    document.getElementById('register-form').classList.add('hidden');
-    document.getElementById('login-form').classList.remove('hidden');
-    showAuthAlert('');
+    showAllAuthForms('login-form');
+  });
+  document.getElementById('show-forgot-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    showAllAuthForms('forgot-form');
+  });
+  document.getElementById('back-to-login-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    showAllAuthForms('login-form');
+  });
+  document.getElementById('back-to-login-from-reset-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    showAllAuthForms('login-form');
   });
   document.getElementById('logout-btn').addEventListener('click', handleLogout);
 

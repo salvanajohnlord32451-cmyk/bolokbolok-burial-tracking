@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BolokBolok Burial Tracking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dark-theme">
+
+  <!-- ================= AUTH VIEW ================= -->
+  <div id="auth-container" class="auth-wrapper">
+    <div class="auth-backdrop"></div>
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <h2>BolokBolok Burial Tracking</h2>
+        <p>Burial Inventory & Deceased Record Tracking</p>
+      </div>
+
+      <!-- Auth Error / Success Banner -->
+      <div id="auth-alert" class="alert hidden"></div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form">
+        <div class="form-group">
+          <label for="login-email">Email Address</label>
+          <input type="email" id="login-email" placeholder="admin@bolokbolok.com" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">
+          <span>Sign In to Dashboard</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <p class="auth-toggle-text">
+          Don't have an account? <a href="#" id="show-register-btn">Register New Account</a>
+        </p>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="auth-form hidden">
+        <div class="form-group">
+          <label for="reg-name">Full Name</label>
+          <input type="text" id="reg-name" placeholder="John Doe" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-email">Email Address</label>
+          <input type="email" id="reg-email" placeholder="john@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Password (min 6 chars)</label>
+          <input type="password" id="reg-password" placeholder="••••••••" required minlength="6">
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">
+          <span>Create Account</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        </button>
+        <p class="auth-toggle-text">
+          Already registered? <a href="#" id="show-login-btn">Sign In Here</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MAIN APP INTERFACE ================= -->
+  <div id="app-container" class="app-layout hidden">
+
+    <!-- SIDE NAVIGATION MENU BAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">BolokBolok</span>
+          <span class="brand-tag">Burial Tracking</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-menu">
+        <div class="menu-label">Main Menu</div>
+        <button class="nav-item active" data-view="dashboard-view">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          <span>Dashboard</span>
+        </button>
+
+        <button class="nav-item" data-view="deceased-view">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span>Deceased List</span>
+        </button>
+
+        <div class="menu-label">Settings & Audit</div>
+        <button class="nav-item" data-view="audit-view">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>Activity Audit Log</span>
+        </button>
+        <button class="nav-item" data-view="account-view">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <span>Account Settings</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar User Profile Footer -->
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-user-avatar">JD</div>
+        <div class="user-info">
+          <span class="user-name" id="sidebar-user-name">User Account</span>
+          <span class="user-email" id="sidebar-user-email">user@example.com</span>
+        </div>
+        <button id="logout-btn" class="logout-btn" title="Logout">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-content">
+      
+      <!-- Top Navbar Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button id="sidebar-toggle-btn" class="sidebar-toggle" aria-label="Toggle Navigation">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+          <h1 id="page-title">Dashboard Overview</h1>
+        </div>
+        <div class="header-right">
+          <button id="quick-add-btn" class="btn btn-primary btn-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Add Record</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- VIEW 1: DASHBOARD OVERVIEW -->
+      <section id="dashboard-view" class="view-section active">
+        <!-- Key Metrics Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon purple">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <div class="stat-data">
+              <span class="stat-label">Total Records</span>
+              <span class="stat-value" id="stat-total">0</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon red" style="background:rgba(239,68,68,0.15); color:var(--accent-red);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="stat-data">
+              <span class="stat-label">Eligible for Removal (20+ Yrs)</span>
+              <span class="stat-value" id="stat-eligible" style="color:var(--accent-red);">0</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            </div>
+            <div class="stat-data">
+              <span class="stat-label">Assigned Lots</span>
+              <span class="stat-value" id="stat-assigned">0</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon orange">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="stat-data">
+              <span class="stat-label">Unassigned (Optional Lot)</span>
+              <span class="stat-value" id="stat-unassigned">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Lot Layout & Quick Recent Feed -->
+        <div class="dashboard-grid">
+          <div class="card lot-visualizer-card">
+            <div class="card-header">
+              <h3>Cemetery Lot Matrix Visualizer</h3>
+              <span class="badge badge-info">Interactive Lot Grid</span>
+            </div>
+            <p class="card-desc">Visual distribution of lot numbers (Gray = Unassigned / Optional, Green = Assigned Lot)</p>
+            <div class="lot-grid" id="lot-matrix-grid">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <div class="card removal-alert-card">
+            <div class="card-header">
+              <h3>⚠️ Due for Removal (20+ Years)</h3>
+              <button class="btn btn-text nav-switch-link" data-view="deceased-view" id="view-eligible-btn">View All Eligible →</button>
+            </div>
+            <p class="card-desc">Deceased individuals whose date of death occurred 20 or more years ago</p>
+            <div class="table-responsive">
+              <table class="data-table compact">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Date of Death</th>
+                    <th>Lot / Owner</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-removal-tbody">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: DECEASED RECORDS LIST -->
+      <section id="deceased-view" class="view-section">
+        
+        <!-- Filter & Search Toolbar Card -->
+        <div class="card filter-toolbar-card">
+          <div class="filter-row primary-filter">
+            <div class="search-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="search-input" placeholder="Search by Deceased Name, Address, Lot Owner, Email, Phone...">
+              <button id="clear-search-btn" class="clear-btn hidden">&times;</button>
+            </div>
+
+            <div class="filter-actions">
+              <button id="export-csv-btn" class="btn btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Export CSV</span>
+              </button>
+              <button id="add-deceased-btn" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <span>New Deceased Record</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Secondary Filters: Date Range & Lot Options -->
+          <div class="filter-row secondary-filter">
+            <div class="filter-group">
+              <label><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Date of Death:</label>
+              <input type="date" id="filter-death-from" title="Death Date From">
+              <span>to</span>
+              <input type="date" id="filter-death-to" title="Death Date To">
+            </div>
+
+            <div class="filter-group">
+              <label>Removal Status (20+ Yrs):</label>
+              <select id="filter-removal-status">
+                <option value="all">All Statuses</option>
+                <option value="eligible">⚠️ Due for Removal (20+ Yrs)</option>
+                <option value="not_eligible">Active (< 20 Yrs)</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label>Lot Status:</label>
+              <select id="filter-lot-status">
+                <option value="all">All Records</option>
+                <option value="assigned">Assigned Lot Only</option>
+                <option value="unassigned">Unassigned (No Lot)</option>
+              </select>
+            </div>
+
+            <button id="reset-filters-btn" class="btn btn-outline btn-sm">Reset Filters</button>
+          </div>
+        </div>
+
+        <!-- Inventory List Container -->
+        <div class="card main-table-card">
+          <div class="card-header">
+            <div class="record-count-badge">
+              Found <strong id="record-count">0</strong> Burial Records
+            </div>
+            <div class="view-mode-toggle">
+              <button id="toggle-table-view" class="icon-toggle active" title="Table View">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              </button>
+              <button id="toggle-grid-view" class="icon-toggle" title="Card Grid View">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Table View Container -->
+          <div id="table-container" class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Full Name</th>
+                  <th>Date of Death</th>
+                  <th>Address</th>
+                  <th>Lot & Owner</th>
+                  <th>Contact Info</th>
+                  <th>Removal Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="burial-table-body">
+                <!-- Loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Grid Card View Container -->
+          <div id="grid-container" class="grid-cards-layout hidden">
+            <!-- Cards rendered via JS -->
+          </div>
+
+          <!-- Empty State -->
+          <div id="empty-state" class="empty-state hidden">
+            <div class="empty-icon">🪦</div>
+            <h4>No Burial Records Found</h4>
+            <p>Try refining your search terms, clearing date filters, or add a new deceased record.</p>
+            <button class="btn btn-primary" onclick="document.getElementById('add-deceased-btn').click()">+ Create Burial Record</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: ACCOUNT & PROFILE SETTINGS -->
+      <section id="account-view" class="view-section">
+        <div class="account-grid">
+          <div class="card account-profile-card">
+            <div class="card-header">
+              <h3>User Account Details</h3>
+            </div>
+            <form id="profile-form">
+              <div class="form-group">
+                <label for="profile-name">Full Name</label>
+                <input type="text" id="profile-name" required>
+              </div>
+              <div class="form-group">
+                <label for="profile-email">Email Address (Read only)</label>
+                <input type="email" id="profile-email" readonly disabled>
+              </div>
+              <div class="form-group">
+                <label for="profile-role">Account Role</label>
+                <input type="text" id="profile-role" readonly disabled>
+              </div>
+              <button type="submit" class="btn btn-primary">Save Profile Name</button>
+            </form>
+          </div>
+
+          <div class="card account-security-card">
+            <div class="card-header">
+              <h3>Change Password</h3>
+            </div>
+            <form id="password-form">
+              <div class="form-group">
+                <label for="curr-pass">Current Password</label>
+                <input type="password" id="curr-pass" placeholder="••••••••" required>
+              </div>
+              <div class="form-group">
+                <label for="new-pass">New Password (min 6 characters)</label>
+                <input type="password" id="new-pass" placeholder="••••••••" required minlength="6">
+              </div>
+              <button type="submit" class="btn btn-secondary">Update Security Password</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: ACTIVITY AUDIT LOGS -->
+      <section id="audit-view" class="view-section">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>Activity & Audit Trail Tracker</h3>
+              <p class="card-desc" style="margin-bottom:0;">Full audit record history tracking who added, edited, or deleted records</p>
+            </div>
+            <button id="refresh-audit-btn" class="btn btn-outline btn-sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              <span>Refresh Log</span>
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Action</th>
+                  <th>Deceased Name</th>
+                  <th>User / Performed By</th>
+                  <th>Details & Changes</th>
+                </tr>
+              </thead>
+              <tbody id="audit-table-body">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ================= BURIAL RECORD MODAL FORM ================= -->
+  <div id="record-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">Add New Deceased Record</h3>
+        <button id="close-modal-btn" class="close-modal-btn">&times;</button>
+      </div>
+
+      <form id="burial-form" class="modal-form">
+        <input type="hidden" id="burial-id">
+
+        <div class="form-group">
+          <label for="record-name">Full Name of Deceased <span class="required">*</span></label>
+          <input type="text" id="record-name" placeholder="e.g. Eleanor Vance" required>
+        </div>
+
+        <div class="form-group">
+          <label for="record-date-death">Date of Death <span class="required">*</span></label>
+          <input type="date" id="record-date-death" required>
+        </div>
+
+        <div class="form-group">
+          <label for="record-address">Address of Deceased / Origin <span class="required">*</span></label>
+          <input type="text" id="record-address" placeholder="e.g. 142 Elmwood Street, Suite 4B" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="record-lot">
+              Lot Number 
+              <span class="optional-badge">(Optional)</span>
+            </label>
+            <input type="text" id="record-lot" placeholder="e.g. Lot A-104">
+          </div>
+
+          <div class="form-group">
+            <label for="record-owner">
+              Lot Owner Name
+              <span class="optional-badge">(Optional)</span>
+            </label>
+            <input type="text" id="record-owner" placeholder="e.g. John Doe (Owner)">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="record-email">
+              Contact Email
+              <span class="optional-badge">(Optional)</span>
+            </label>
+            <input type="email" id="record-email" placeholder="e.g. owner@example.com">
+          </div>
+
+          <div class="form-group">
+            <label for="record-phone">
+              Contact Phone
+              <span class="optional-badge">(Optional)</span>
+            </label>
+            <input type="text" id="record-phone" placeholder="e.g. +63 912 345 6789">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="record-section">Cemetery Section</label>
+            <select id="record-section">
+              <option value="General">General Section</option>
+              <option value="Garden of Peace">Garden of Peace</option>
+              <option value="Memorial Park">Memorial Park</option>
+              <option value="Family Crypts">Family Crypts</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="record-notes">Memoir / Additional Notes</label>
+          <textarea id="record-notes" rows="3" placeholder="Enter optional notes, next of kin details..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="delete-record-modal-btn" class="btn btn-secondary delete-modal-btn hidden" style="color:var(--accent-red); border-color:rgba(239,68,68,0.4); margin-right:auto;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <span>Delete Record</span>
+          </button>
+          <button type="button" id="cancel-modal-btn" class="btn btn-outline">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Burial Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

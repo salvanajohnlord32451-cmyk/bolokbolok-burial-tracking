@@ -199,7 +199,7 @@ router.post('/', async (req, res) => {
       lotOwnerName: lotOwnerName ? lotOwnerName.trim() : '', // Optional
       email: email ? email.trim() : '', // Optional
       phone: phone ? phone.trim() : '', // Optional
-      section: section ? section.trim() : 'General',
+      section: section ? section.trim() : 'Ground',
       notes: notes ? notes.trim() : '',
       createdBy: req.user._id,
       updatedBy: req.user._id
@@ -260,7 +260,7 @@ router.put('/:id', async (req, res) => {
     if (lotOwnerName !== undefined) burial.lotOwnerName = lotOwnerName ? lotOwnerName.trim() : '';
     if (email !== undefined) burial.email = email ? email.trim() : '';
     if (phone !== undefined) burial.phone = phone ? phone.trim() : '';
-    if (section !== undefined) burial.section = section ? section.trim() : 'General';
+    if (section !== undefined) burial.section = section ? section.trim() : 'Ground';
     if (notes !== undefined) burial.notes = notes ? notes.trim() : '';
 
     burial.updatedBy = req.user._id;

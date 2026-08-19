@@ -500,7 +500,7 @@ function openRecordModal(burialObj = null) {
     document.getElementById('record-owner').value = burialObj.lotOwnerName || '';
     document.getElementById('record-email').value = burialObj.email || '';
     document.getElementById('record-phone').value = burialObj.phone || '';
-    document.getElementById('record-section').value = burialObj.section || 'General';
+    document.getElementById('record-section').value = burialObj.section || 'Ground';
     document.getElementById('record-notes').value = burialObj.notes || '';
     deleteBtn.classList.remove('hidden');
   } else {
@@ -712,7 +712,7 @@ function exportToCSV() {
       `"${(b.lotOwnerName || '').replace(/"/g, '""')}"`,
       `"${(b.email || '').replace(/"/g, '""')}"`,
       `"${(b.phone || '').replace(/"/g, '""')}"`,
-      `"${(b.section || 'General').replace(/"/g, '""')}"`,
+      `"${(b.section || 'Ground').replace(/"/g, '""')}"`,
       `"${isDue ? 'Due for Removal (20+ Yrs)' : 'Active (< 20 Yrs)'}"`,
       `"${(b.notes || '').replace(/"/g, '""')}"`
     ];

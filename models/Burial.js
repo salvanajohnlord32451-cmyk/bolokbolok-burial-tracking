@@ -46,7 +46,7 @@ const burialSchema = new mongoose.Schema({
   },
   section: {
     type: String,
-    default: 'General',
+    default: 'Ground',
     trim: true
   },
   notes: {

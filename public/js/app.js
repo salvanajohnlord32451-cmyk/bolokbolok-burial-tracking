@@ -789,6 +789,23 @@ function setupEventListeners() {
   document.getElementById('cancel-modal-btn').addEventListener('click', closeRecordModal);
   document.getElementById('burial-form').addEventListener('submit', handleBurialSubmit);
 
+  // Close modal when clicking outside modal card
+  const recordModal = document.getElementById('record-modal');
+  if (recordModal) {
+    recordModal.addEventListener('click', (e) => {
+      if (e.target === recordModal) {
+        closeRecordModal();
+      }
+    });
+  }
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && recordModal && !recordModal.classList.contains('hidden')) {
+      closeRecordModal();
+    }
+  });
+
   // Filters & Search
   let searchTimeout;
   document.getElementById('search-input').addEventListener('input', (e) => {

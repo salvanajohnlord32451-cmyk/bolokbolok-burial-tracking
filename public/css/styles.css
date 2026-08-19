@@ -810,23 +810,29 @@ input:focus, select:focus, textarea:focus {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 200;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
+  overflow-y: auto;
 }
 
 .modal-card {
   width: 100%;
-  max-width: 580px;
+  max-width: 560px;
+  max-height: calc(100vh - 32px);
   background: var(--bg-modal);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
   animation: modalPop 0.25s ease;
 }
 
@@ -836,38 +842,111 @@ input:focus, select:focus, textarea:focus {
 }
 
 .modal-header {
-  padding: 20px 24px;
+  padding: 16px 20px;
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: var(--bg-modal);
+  flex-shrink: 0;
+}
+
+.modal-header h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .close-modal-btn {
-  background: none;
-  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-color);
   color: var(--text-muted);
-  font-size: 24px;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  line-height: 1;
   cursor: pointer;
+  transition: var(--transition);
+}
+
+.close-modal-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: var(--accent-red);
 }
 
 .modal-form {
-  padding: 24px;
+  padding: 18px 22px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom scrollbar for modal form */
+.modal-form::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-form::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+
+.modal-form::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+.modal-form::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.modal-form .form-group {
+  margin-bottom: 12px;
+}
+
+.modal-form .form-group label {
+  font-size: 12px;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.modal-form input[type="text"],
+.modal-form input[type="email"],
+.modal-form input[type="date"],
+.modal-form select,
+.modal-form textarea {
+  padding: 8px 12px;
+  font-size: 13.5px;
+}
+
+.modal-form textarea {
+  min-height: 56px;
+  max-height: 90px;
+  resize: vertical;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 12px;
 }
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 24px;
-  padding-top: 18px;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
   border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
 }
 
 /* Toast Notifications */
